@@ -1,0 +1,25 @@
+digraph G {
+  rankdir=LR; dpi=150; nodesep=0.25; ranksep=0.6;
+  label="Figure 5: Where data is stored (schema spi; arrow = one to many)"; labelloc=t; fontname="Helvetica-Bold"; fontsize=15;
+  node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=10, color="#555555", fillcolor="#d9f2d9"];
+  edge [color="#444444"];
+
+  subgraph cluster_ref { label="Reference"; style="rounded,dashed"; fontname="Helvetica"; fontsize=10;
+    product; scheme; component; geo_unit; }
+  subgraph cluster_file { label="Synced files (2 newest per month and kind)"; style="rounded,dashed"; fontname="Helvetica"; fontsize=10;
+    source_file; live_file [label="live_file (view)", fillcolor="#ffffff"]; file_component; file_dealer; file_dealer_component; file_dealer_gift; load_run; }
+  subgraph cluster_acc { label="Access"; style="rounded,dashed"; fontname="Helvetica"; fontsize=10;
+    app_user; user_scheme; audit_log [label="audit_log\n(append only)"]; }
+  subgraph cluster_ver { label="Saved versions (row level security)"; style="rounded,dashed"; fontname="Helvetica"; fontsize=10;
+    saved_version; saved_version_edit; saved_version_layout; saved_version_snapshot; saved_version_dealer_result; }
+
+  product -> scheme -> component;
+  source_file -> live_file [style=dashed];
+  source_file -> file_component; component -> file_component;
+  source_file -> file_dealer; geo_unit -> file_dealer;
+  file_component -> file_dealer_component; file_dealer -> file_dealer_component;
+  source_file -> file_dealer_gift; geo_unit -> file_dealer_gift; scheme -> file_dealer_gift;
+  app_user -> user_scheme; scheme -> user_scheme; app_user -> audit_log;
+  saved_version -> saved_version_edit; saved_version -> saved_version_layout;
+  saved_version -> saved_version_snapshot; saved_version -> saved_version_dealer_result;
+}

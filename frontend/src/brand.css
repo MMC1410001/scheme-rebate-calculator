@@ -1,0 +1,177 @@
+/* The app's look (10 Nov 2026): a neutral made-up palette (teal #2e6f73, amber #e9a23b, ink #212121,
+   grey #646464, off-white #F9F7F7), Poppins with JetBrains Mono for the readout's figures, light and dark (theme.ts).
+   Loaded after App.css; html.brand (index.html) gives these rules the weight to override it. */
+
+html.brand {
+  color-scheme: light;
+  --bg: #f9f7f7; --surface: #ffffff; --surface-2: #fcfbfb;
+  --line: #ece8e8; --line-soft: #f3f0f0; --field-line: #9a9494;
+  --text: #212121; --text-2: #4a4a4a; --text-3: #3a3a3a; --muted: #646464;
+  --accent: #2e6f73; --accent-ink: #1f5458; --accent-soft: #e6f2f2; --accent-line: #b6d9d9;
+  --on-accent: #ffffff; --primary: #2e6f73;
+  --cost: #b3261e; --cost-soft: #fbe9e7; --lower: #2f5d9e; --lower-soft: #e8eef8;
+  --ok: #1b6e45; --ok-soft: #e6f4ec;
+  --warn-bg: #fff8e1; --warn-line: #e9a23b; --warn-text: #6b5300;
+  --edited-bg: #fff3c4; --edited-line: #cf8a24;
+  --m-prev: #9e9e9e; --m-prev-bg: #f3f1f1; --m-prev-tint: #fbfafa;
+  --m-cur: #2e6f73; --m-cur-tint: #f2f8f8;
+  --m-next: #cf8a24; --m-next-tint: #fffcf2;
+  --hover-row: #edf5f5;
+  --r-md: 10px; --r-lg: 14px; --radius: 14px;
+  --shadow-1: 0 1px 2px rgba(33, 33, 33, .05);
+  --shadow-2: 0 6px 16px rgba(33, 33, 33, .08);
+  --shadow-3: 0 18px 40px rgba(33, 33, 33, .16);
+  --prod-w: 220px;
+  --font: "Poppins", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", monospace;
+}
+
+html.brand[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #181a1b; --surface: #212121; --surface-2: #262626;
+  --line: #333333; --line-soft: #2b2b2b; --field-line: #6e6e6e;
+  --text: #f2f0f0; --text-2: #d2cece; --text-3: #e0dcdc; --muted: #a6a3a3;
+  --accent: #8fcfcf; --accent-ink: #b3e2e2; --accent-soft: #1c3536; --accent-line: #2e5a5c;
+  --on-accent: #181a1b; --primary: #3d8e92;
+  --cost: #ff8a80; --cost-soft: #3a2321; --lower: #8fb3ee; --lower-soft: #1f2a3a;
+  --ok: #7fdda8; --ok-soft: #1c3326;
+  --warn-bg: #2a2618; --warn-line: #6e5a16; --warn-text: #e9a23b;
+  --edited-bg: #3a3315; --edited-line: #e9a23b;
+  --m-prev: #6a6767; --m-prev-bg: #262626; --m-prev-tint: #232323;
+  --m-cur: #62b3b6; --m-cur-tint: #1d2a2b;
+  --m-next: #e9a23b; --m-next-tint: #26231a;
+  --hover-row: #1f2c2d;
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, .4);
+  --shadow-2: 0 6px 16px rgba(0, 0, 0, .45);
+  --shadow-3: 0 18px 40px rgba(0, 0, 0, .55);
+}
+
+/* ---- type ---- */
+html.brand body { font-family: var(--font); background: var(--bg); color: var(--text); }
+/* Mono for the readout's headline figures; the wide tables keep Poppins with fixed-width digits, so three months fit. */
+html.brand .ro-stat > b { font-family: var(--mono); font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+html.brand .mv-table, html.brand .mv-small { font-variant-numeric: tabular-nums; }
+
+/* ---- command bar ---- */
+html.brand .cmdbar { background: color-mix(in srgb, var(--surface) 92%, transparent); border-bottom-color: var(--line); }
+html.brand .cmd-id h1 { font-weight: 600; letter-spacing: -.01em; }
+html.brand .tabs { background: var(--line-soft); border-radius: 999px; padding: 4px; gap: 2px; border: 0; }
+html.brand .tabs button { border-radius: 999px; padding: 6px 16px; }
+html.brand .tabs button.is-active { background: var(--primary); color: #ffffff; box-shadow: none; }
+html.brand .tabs button.is-active .pill { background: #e9a23b; color: #212121; }
+
+html.brand .btn { border-radius: 999px; }
+html.brand .btn-primary, html.brand .btn.btn-primary { background: var(--primary); border-color: var(--primary); color: #ffffff; }
+html.brand .btn-primary:hover { background: color-mix(in srgb, var(--primary) 86%, #000); }
+html.brand .btn-export { border-color: var(--primary); color: var(--accent-ink); }
+html.brand .theme-toggle { width: 36px; height: 36px; padding: 0; display: inline-flex; align-items: center; justify-content: center; color: var(--text-2); }
+
+html.brand .ms-btn, html.brand .f select, html.brand .f input[type="text"], html.brand .f input:not([type]) {
+  border-radius: 999px; background: var(--surface); color: var(--text);
+}
+
+/* ---- readout: one card, figures in mono, change pills under them ---- */
+html.brand .readout { background: var(--surface); border-radius: 16px; padding: var(--s3) var(--s5); box-shadow: var(--shadow-1); }
+html.brand .readout.is-live { background: color-mix(in srgb, var(--edited-bg) 45%, var(--surface)); border-color: var(--edited-line); }
+html.brand .ro-stat > b { font-weight: 600; }
+/* every figure the same size, weight and colour; more room between them */
+html.brand .ro-stats { gap: var(--s8); }
+html.brand .ro-stat { gap: 3px; }
+html.brand .ro-stat.is-standing > b { font-size: var(--t-xl); font-weight: 600; color: var(--text); }
+html.brand .ro-stat.is-est { padding-left: var(--s8); }
+@media (max-width: 1180px) {
+  html.brand .ro-stats { gap: var(--s6); }
+  html.brand .ro-stat > b, html.brand .ro-stat.is-standing > b { font-size: var(--t-lg); }
+  html.brand .ro-stat.is-est { padding-left: var(--s6); }
+}
+@media (max-width: 760px) {
+  html.brand .ro-stats { gap: var(--s3) var(--s4); }
+  html.brand .ro-stat > b, html.brand .ro-stat.is-standing > b { font-size: var(--t-md); }
+  html.brand .ro-stat.is-est { padding-left: 0; }
+}
+html.brand .ro-vs {
+  align-self: flex-start; margin-top: 3px; font-size: 11px; font-weight: 600; padding: 1px 7px; border-radius: 999px;
+  white-space: nowrap;
+}
+html.brand .ro-vs i { font-style: normal; font-weight: 500; opacity: .8; }
+html.brand .ro-vs.up { background: var(--ok-soft); color: var(--ok); }
+html.brand .ro-vs.down, html.brand .ro-vs.is-higher { background: var(--cost-soft); color: var(--cost); }
+html.brand .ro-vs.is-lower { background: var(--lower-soft); color: var(--lower); }
+html.brand .ro-vs.flat { background: var(--line-soft); color: var(--muted); }
+
+/* ---- cards and the month table ---- */
+html.brand .card-viz { border-radius: 18px; border-color: var(--line); box-shadow: var(--shadow-1); background: var(--surface); }
+/* one toolbar row: view switch, How to read, hint, then the tools on the right */
+html.brand .mv-head.mv-bar { align-items: center; justify-content: flex-start; gap: var(--s3); flex-wrap: wrap; }
+html.brand .mv-bar > .mv-tools { flex: 0 0 auto; margin-left: auto; }
+/* the hint gives way first when the row is short of room */
+html.brand .mv-bar > .mv-hint { flex: 1 1 0; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+html.brand .mv-bar > .sim-view { margin: 0; flex: 0 0 auto; }
+html.brand .mv-bar .sim-view > span { display: none; }
+html.brand .mv-bar .mv-tools { align-items: center; }
+html.brand .mv-hint { font-size: var(--t-xs); color: var(--muted); }
+html.brand .mv-bar + .held-note { margin-bottom: var(--s3); }
+html.brand .mv-help { position: relative; }
+html.brand .mv-help-btn { display: inline-flex; align-items: center; gap: 6px; color: var(--accent-ink); border-color: var(--accent-line); }
+html.brand .mv-help-pop {
+  position: absolute; top: calc(100% + 8px); left: 0; z-index: 30; width: min(620px, 88vw);
+  background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow-3);
+  padding: var(--s4) var(--s5); font-size: var(--t-sm); line-height: 1.55; color: var(--text-2);
+  display: flex; flex-direction: column; gap: var(--s2);
+}
+html.brand .mv-help-pop p, html.brand .mv-help-pop ul { margin: 0; }
+html.brand .mv-help-pop ul { padding-left: 18px; }
+html.brand .mv-help-pop > .btn { align-self: flex-end; }
+html.brand .held-note { border-radius: 12px; }
+
+html.brand .mv-table thead th { background: var(--surface); }
+html.brand .mv-month { border-top-width: 3px !important; border-radius: 0; }
+html.brand .mv-month.is-prev { background: var(--m-prev-bg) !important; }
+html.brand .mv-month.is-cur { background: var(--accent-soft) !important; }
+html.brand .mv-month.is-next { background: var(--warn-bg) !important; }
+html.brand .mv-month span { font-family: var(--font); font-weight: 600; }
+/* V, in the Next month's header */
+html.brand .mv-month .mv-v { flex-direction: row; align-items: center; justify-content: center; gap: 6px; margin-top: 4px; }
+html.brand .mv-month .mv-v > span:first-child { display: inline; color: var(--warn-text); }
+html.brand .mv-month .mv-v .mv-input-box { display: inline-flex; }
+html.brand .mv-month .mv-v input { width: 64px; padding: 2px 6px; font-size: var(--t-sm); border-radius: 999px; background: var(--surface); color: var(--text); }
+html.brand .mv-month .mv-v em { display: inline; }
+html.brand .mv-table tbody tr:hover > * { background: var(--hover-row); }
+html.brand .mv-table th.mv-product, html.brand .mv-table .mv-toggle { font-family: var(--font); }
+
+/* change lines as pills */
+html.brand .mv-delta {
+  display: block; width: fit-content; margin: 3px 0 0 auto; padding: 1px 6px; border-radius: 999px;
+  font-size: 10.5px; font-weight: 600; white-space: nowrap;
+}
+html.brand .mv-delta.up { background: var(--ok-soft); color: var(--ok); }
+html.brand .mv-delta.down, html.brand .mv-delta.is-higher { background: var(--cost-soft); color: var(--cost); }
+html.brand .mv-delta.is-lower { background: var(--lower-soft); color: var(--lower); }
+
+/* figures look like figures until the pointer is on them; a click types over */
+html.brand .mv-edit { border-color: transparent; background: transparent; }
+html.brand .mv-edit:hover { border-color: var(--accent); border-style: dashed; background: var(--surface); }
+html.brand .mv-edit.is-edited { border: 1px solid var(--edited-line); background: var(--edited-bg); }
+
+/* the pinned Impact column, right after Product */
+html.brand .mv-table tr:not(.mv-comp-row) > .mv-product { width: var(--prod-w); min-width: var(--prod-w); max-width: var(--prod-w); white-space: normal; }
+html.brand .mv-table .mv-impact {
+  position: sticky; left: var(--prod-w); z-index: 1; min-width: 104px;
+  background: color-mix(in srgb, var(--edited-bg) 55%, var(--surface)); border-right: 1px solid var(--line);
+  font-weight: 600;
+}
+html.brand .mv-table thead .mv-impact { z-index: 3; color: var(--warn-text); }
+html.brand .mv-impact-next { display: block; font-size: 10.5px; font-weight: 500; opacity: .85; }
+
+@media (max-width: 760px) {
+  html.brand { --prod-w: 132px; }
+}
+
+/* dark: the charts' and Plan's fixed light colours */
+html.brand[data-theme="dark"] .viz-root { --grid: #333333; --gsr-1: #1f2a3a; --gsr-2: #26354a; --avg: #9a9696; }
+html.brand[data-theme="dark"] .pc-method.is-best { background: color-mix(in srgb, var(--series-2) 12%, var(--surface)); }
+html.brand[data-theme="dark"] .pace-fill.is-ref, html.brand[data-theme="dark"] .sw-ref { background: #6e6e6e; }
+html.brand[data-theme="dark"] .mv-scroll::-webkit-scrollbar-thumb { background: #4a4a4a; }
+@supports not selector(::-webkit-scrollbar) {
+  html.brand[data-theme="dark"] .mv-scroll { scrollbar-color: #4a4a4a var(--surface-2); }
+}

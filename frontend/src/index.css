@@ -1,0 +1,54 @@
+/*
+ * Base reset for the dashboard.
+ *
+ * Replaces the Vite scaffold's boilerplate, which pinned #root to a fixed
+ * 1126px, centred all text and drew a border down each side -- fine for a demo
+ * page, wrong for an analytics dashboard that should use the whole screen.
+ * All real styling lives in App.css.
+ */
+:root {
+  color-scheme: light;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+}
+
+/* Colours come from the tokens in App.css (--bg, --text), so the two files cannot disagree. */
+body {
+  background: var(--bg, #f4f6f8);
+  color: var(--text, #14171c);
+  font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+h1,
+h2,
+h3 {
+  font-weight: 650;
+  color: var(--text, #14171c);
+}
+
+button,
+input,
+select {
+  font-family: inherit;
+}

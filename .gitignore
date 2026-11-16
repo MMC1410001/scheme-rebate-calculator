@@ -1,0 +1,48 @@
+# OS
+.DS_Store
+Thumbs.db
+# Editors
+.vscode/
+.idea/
+# Env and secrets
+.env
+.env.*
+!.env.example
+# GCP service-account keys
+example-project-*.json
+# Node
+node_modules/
+dist/
+build/
+.next/
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+# Data extracts (never commit client data)
+data/raw/
+*.xlsx
+*.csv
+# Synced GCS files, sample data and parquet caches (client data)
+*.parquet
+backend/data/
+
+# graft's local graph cache — regenerable, not committed (run `graft build`).
+/graft/
+
+# Docker and YAML files (local containers, compose files, drafts): never committed
+Dockerfile*
+*.dockerfile
+.dockerignore
+docker-compose*
+compose.yml
+compose.yaml
+*.yml
+*.yaml
+# ...except the DevOps deployment files (user's request, 2 Nov 2026)
+!backend/Dockerfile
+!frontend/Dockerfile
+!backend/.dockerignore
+!frontend/.dockerignore
+!/docker-compose.yml

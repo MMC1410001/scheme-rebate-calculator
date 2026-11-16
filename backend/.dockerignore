@@ -1,0 +1,10 @@
+# Env files hold secrets: settings reach the container from docker-compose.yml (env_file), never the image.
+.env*
+.venv/
+data/
+**/__pycache__/
+*.pyc
+*.parquet
+*.xlsx
+*.csv
+example-project-*.json

@@ -1,0 +1,27 @@
+digraph G {
+  rankdir=LR; dpi=150; nodesep=0.4; ranksep=0.7; compound=true;
+  label="Figure 1: How the system is deployed (Docker)"; labelloc=t; fontname="Helvetica-Bold"; fontsize=16;
+  node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=11, color="#555555"];
+  edge [fontname="Helvetica", fontsize=9, color="#444444"];
+
+  user [label="Users (browser)\nADMIN · SCHEME_MANAGER\n· VIEWER", fillcolor="#ffe3c2"];
+
+  subgraph cluster_host {
+    label="Docker host — docker compose"; fontname="Helvetica"; fontsize=11; style="rounded,dashed"; color="#3b6fb6";
+    web    [label="web  (nginx-unprivileged :8080)\nweb app files · security headers\n16 MB request limit · login limit\nHttpOnly session cookie\n/api → api:8010", fillcolor="#d6e6fa"];
+    api    [label="api  (FastAPI + uvicorn :8010)\n1 container, 1 worker\ncaches in memory (about 1.5 GB)\nfile watch every 2 min", fillcolor="#d6e6fa"];
+    loader [label="loader  (app.loader_main)\nmigrations on start\ndaily GCS sync 14:00 IST\nPostgres loads + retention", fillcolor="#d6e6fa"];
+    vol    [label="volume spc-data\n/data/gcs: .xlsx + parquet\nlatest.json · gifts.json", fillcolor="#d9f2d9", shape=cylinder];
+  }
+
+  gcs [label="Google Cloud Storage\nexample-scheme-files\n(read only service account)", fillcolor="#e6e6e6"];
+  pg  [label="PostgreSQL app_db\n(shared; schema spi only)\nnetwork shared-db\n_app-network", fillcolor="#d9f2d9", shape=cylinder];
+
+  user -> web [label="HTTPS", dir=both];
+  web -> api [label="/api/v1/*  JSON", dir=both];
+  gcs -> loader [label="list + download"];
+  loader -> vol [label="write files"];
+  vol -> api [label="read files"];
+  loader -> pg [label="SPI_OWNER_URL\nDDL + loads"];
+  api -> pg [label="SPI_DATABASE_URL\nversions, users, audit\n(row level security)", dir=both];
+}

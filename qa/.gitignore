@@ -1,0 +1,4 @@
+api-tests/node_modules/
+api-tests/test-results/
+api-tests/playwright-report/
+api-tests/playwright-report-ui/

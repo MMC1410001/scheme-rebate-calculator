@@ -1,0 +1,23 @@
+digraph G {
+  rankdir=TB; dpi=150; nodesep=0.3; ranksep=0.45;
+  label="Figure 2: Inside the API"; labelloc=t; fontname="Helvetica-Bold"; fontsize=16;
+  node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=10, color="#555555", fillcolor="#d6e6fa"];
+  edge [fontname="Helvetica", fontsize=9, color="#444444"];
+
+  mw [label="Front door (main.py)\nsecurity headers · refuses requests over 16 MB\nfixes one month per request · health check", width=5];
+  auth [label="Login and access (auth.py, access.py)\nsession check · failed login limits · what each role may change", fillcolor="#f6d6d6"];
+  routers [label="Routes (routers, all under /v1)\ncheck the request and its filters, then hand over the work"];
+  service [label="Live month and caches (service/live.py)\nholds the current month · keeps results\nreloads when a new file arrives"];
+  svc2 [label="Versions, trend, Excel export\n(service, api)"];
+  core [label="Calculation engine (core)\nslab tables · edits · next month · growth\nproducts · filters · trend · gifts"];
+  ingest [label="Data loading (ingest)\nfetch files · recognise layout · find schemes\nwork out payout formulas · check against file"];
+  spi [label="Database (spi)\ncreate tables · load files · read months · store Versions", fillcolor="#d9f2d9"];
+  sched [label="Daily schedule\n(loader container)", fillcolor="#e6e6e6"];
+
+  mw -> auth -> routers;
+  routers -> service; routers -> svc2;
+  service -> core; svc2 -> core; svc2 -> spi;
+  service -> ingest [label="read a month"];
+  service -> spi [label="read a month\n(when set to)"];
+  sched -> ingest; ingest -> spi [label="load after fetch"];
+}

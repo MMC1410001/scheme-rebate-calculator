@@ -1,0 +1,104 @@
+# Scheme Performance & Impact Calculator: API + web app.
+#
+# Start (from the repo root):  docker compose --env-file backend/.env.dev up -d --build
+# Stop:                        docker compose --env-file backend/.env.dev down
+#
+# --env-file picks APP_ENV (and VITE_API_BASE_URL, /api/v1); the same file is passed to the API at run
+# time (env_file). Settings: backend/.env.example.
+#
+# Database: the shared Postgres used before (app_db, container shared-postgres-db) on the existing network
+# below; no new database is needed. Our tables are only in schema spi. SPI_DATABASE_URL (the API's login) and
+# SPI_OWNER_URL (migrations and loads; may be the same login) are set in the env file.
+# The loader creates or updates the tables on start when SPI_OWNER_URL is set. Without them the app runs from the
+# synced files and versions cannot be saved. (The old schema spc in app_db is no longer used.)
+#
+# Three containers: web (nginx, the only published port), api (answers users) and loader (the daily GCS sync and the
+# database loads). Only the loader gets SPI_OWNER_URL, the login that may create and drop tables: the api runs with
+# the app's login alone. The two share the spc-data volume; the api picks up a newly synced file by itself within
+# about 2 minutes.
+#
+# Notes for DevOps:
+# - Users open the web app (port 8080). It serves the API at /api (/api/v1/... for the routes; frontend/nginx.conf), so the API's own
+#   port is not published. VITE_API_BASE_URL=/api/v1 (set, never empty); CORS_ORIGINS stays empty (same address).
+# - The API takes about 1 minute to warm up after a start; GET /api/health shows "ready": true when done.
+# - The API must run as ONE container with one worker: its caches are in memory. The daily GCS sync
+#   (14:00 India time) runs in the loader container; run exactly one loader.
+# - Login: ADMIN_USERNAME / ADMIN_PASSWORD (and ADMIN_USERS) plus ADMIN_SESSION_SECRET in the env file. Without them
+#   every page of data answers "login is not set up" (503). Serve 8080 behind HTTPS; SESSION_COOKIE_SECURE=false only
+#   while a server is reached over plain http.
+# - nginx limits requests per browser address (frontend/nginx.conf). Behind one shared proxy every user has the same
+#   address there: raise the limits or pass the real client address on.
+services:
+  api:
+    build: ./backend
+    image: scheme-performance-api
+    container_name: scheme-performance-api
+    restart: unless-stopped
+    env_file: backend/.env.${APP_ENV:-dev}
+    environment:
+      DATA_DIR: /data/gcs
+      # The loader container syncs; the api only reads what it wrote, with the app's database login.
+      LOADER_SCHEDULE_ENABLED: "false"
+      SPI_OWNER_URL: ""
+    # No published port: only the web container reaches the API (at http://api:8010, on the default network).
+    expose:
+      - "8010"
+    volumes:
+      - spc-data:/data
+    # Measured 5 Nov 2026 (Nov'26, 592k rows): about 1.5 GB once every cache is warm. A reload holds the old and the
+    # new month for a moment, so the limit is about twice that.
+    mem_limit: 3g
+    networks:
+      - default
+      - app-network
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8010/health', timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
+
+  loader:
+    # The api's image (the second build is a cache hit); creates or updates the tables, then syncs on schedule.
+    build: ./backend
+    image: scheme-performance-api
+    container_name: scheme-performance-loader
+    restart: unless-stopped
+    command: ["python", "-m", "app.loader_main"]
+    env_file: backend/.env.${APP_ENV:-dev}
+    environment:
+      DATA_DIR: /data/gcs
+      LOADER_SCHEDULE_ENABLED: "true"
+    volumes:
+      - spc-data:/data
+    # Parsing a new month's workbook is the loader's heaviest step (not measured on its own yet): raise this if the
+    # loader is stopped for memory ("OOMKilled" in docker inspect).
+    mem_limit: 2g
+    networks:
+      - default
+      - app-network
+
+  web:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-/api/v1}
+    image: scheme-performance-web
+    container_name: scheme-performance-web
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    # The image's healthcheck (frontend/Dockerfile) checks nginx; the api's says the process is up.
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  # Synced GCS files and parquet caches (current month + last 3).
+  spc-data:
+    name: spc-data
+
+networks:
+  app-network:
+    name: shared-db_app-network
+    external: true

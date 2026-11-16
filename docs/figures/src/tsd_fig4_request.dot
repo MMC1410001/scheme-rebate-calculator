@@ -1,0 +1,21 @@
+digraph G {
+  rankdir=LR; dpi=150; nodesep=0.3; ranksep=0.4;
+  label="Figure 4: How a request that carries edits is answered"; labelloc=t; fontname="Helvetica-Bold"; fontsize=16;
+  node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=10, color="#555555", fillcolor="#d6e6fa"];
+  edge [fontname="Helvetica", fontsize=9, color="#444444"];
+
+  b  [label="Browser\nholds the user's\nedits (never\nkept on the server)", fillcolor="#ffe3c2"];
+  m  [label="Front door\nsize check\nfix the month"];
+  a  [label="Login and role\nmay this user make\nthese edits?", fillcolor="#f6d6d6"];
+  s  [label="Filters checked\nagainst the\nlive month"];
+  f  [label="Apply the edits\nto the dealer table\n(kept for reuse,\n2 at a time)"];
+  cp [label="Find the schemes\nthe edits touch"];
+  e  [label="Place dealers in\nslabs again\nCN = units × rate"];
+  u  [label="Untouched schemes\nfrom the cache of\nthe month without\nedits", fillcolor="#d9f2d9"];
+  o  [label="Figures returned\n(no dealer names\nin totals)", fillcolor="#ffe3c2"];
+
+  b -> m [label="request with\nthe edits"];
+  m -> a -> s -> f -> cp -> e -> o;
+  u -> o;
+  o -> b [style=dashed];
+}

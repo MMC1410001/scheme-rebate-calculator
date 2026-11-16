@@ -1,0 +1,15 @@
+# Python lint (scripts/check.sh): `.venv/bin/python -m ruff check .` from backend/.
+# Errors and likely bugs (pyflakes F, pycodestyle errors E / warnings W, bugbear B), imports sorted (I) and modern
+# syntax (UP). Lines up to 120 characters, as the code is written.
+line-length = 120
+target-version = "py312"
+extend-exclude = ["data"]
+
+[lint]
+select = ["E", "W", "F", "B", "I", "UP"]
+ignore = [
+    "E501",   # long lines: the code has no formatter yet; a handful run a few characters past 120
+    "E731",   # a named lambda, used on purpose for small key functions
+    "B008",   # Depends()/Query() in argument defaults is how FastAPI declares them
+    "B905",   # zip() without strict= where lengths are equal by construction
+]

@@ -1,0 +1,19 @@
+digraph G {
+  rankdir=LR; dpi=150; nodesep=0.3; ranksep=0.4;
+  label="Figure 3: How new data arrives every day"; labelloc=t; fontname="Helvetica-Bold"; fontsize=16;
+  node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=10, color="#555555", fillcolor="#d6e6fa"];
+  edge [fontname="Helvetica", fontsize=9, color="#444444"];
+
+  t  [label="Every day\n14:00 India time\n(retried on failure)", fillcolor="#e6e6e6"];
+  l  [label="Look in the\nmonth folder\n(\"no condonation\"\nfiles only)"];
+  c  [label="Tell CN file and\ngift file apart\nby their header"];
+  p  [label="Pick the newest\nof each kind\n(upload date,\nthen version)"];
+  d  [label="Download and\nread it once\ninto a fast copy"];
+  j  [label="Record it as\nthe current file", fillcolor="#d9f2d9"];
+  db [label="Load into the\ndatabase and\ncheck against\nthe file", fillcolor="#d9f2d9"];
+  r  [label="Remove old data\n(files: 4 months,\nVersions: 3 months)"];
+  w  [label="API notices the\nnew file within\n2 minutes and\nswaps it in", fillcolor="#ffe3c2"];
+
+  t -> l -> c -> p -> d -> j -> db -> r;
+  j -> w [style=dashed];
+}

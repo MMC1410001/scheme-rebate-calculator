@@ -1,0 +1,22 @@
+digraph G {
+  rankdir=TB; dpi=150; nodesep=0.3; ranksep=0.35;
+  label="Figure 2 — How one dealer's CN is worked out"; labelloc=t; fontname="Helvetica-Bold"; fontsize=16;
+  node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=11, color="#555555", fillcolor="#d6e6fa"];
+  edge [fontname="Helvetica", fontsize=9, color="#444444"];
+
+  row   [label="Dealer row in the extract\nachievement, Next Slab (shortfall),\nrate (CN%), Clear Cut", fillcolor="#e6e6e6"];
+  edges [label="Slab edges = achievement + Next Slab\n(whole country, edges with >= 10 dealers)"];
+  band  [label="Band = first edge above achievement\n(sitting on an edge = reached it)"];
+  qual  [label="Earning 0% inside a paying band?\n-> 'Not qualified' (never paid)", fillcolor="#fde2e2"];
+  units [label="cn_units = Clear Cut / rate\n(so untouched CN = what was settled)"];
+  rate  [label="Rate = own rate if still in its source band,\nelse the rate most of the region earns there,\nthen any rate edit"];
+  cn    [label="CN = cn_units x rate", fillcolor="#ffe3c2"];
+  roll  [label="Roll up: slab -> component -> scheme\n-> product -> total (CN % = CN / GSR)", fillcolor="#d9f2d9"];
+
+  row -> edges -> band;
+  band -> qual [style=dashed, label="check"];
+  row -> units;
+  band -> rate;
+  units -> cn; rate -> cn;
+  cn -> roll;
+}

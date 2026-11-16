@@ -1,0 +1,8 @@
+# Tests (pytest): pip install -r requirements.txt -r requirements-dev.txt
+pytest==9.2.0
+# The HTTP client behind FastAPI's TestClient (Starlette asks for httpx2 in place of httpx).
+httpx2==2.16.0
+# Known vulnerabilities in the pinned packages (scripts/check.sh).
+pip-audit==2.9.0
+# Python lint (backend/ruff.toml; scripts/check.sh).
+ruff==0.17.3

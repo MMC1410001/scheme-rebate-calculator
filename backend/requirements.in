@@ -1,0 +1,14 @@
+# Direct dependencies of the API. requirements.txt is compiled from this file with every version pinned:
+#   uv pip compile requirements.in -o requirements.txt --universal --python-version 3.14
+# (add -c <(.venv/bin/python -m pip freeze) to keep the versions already tested in the local venv).
+fastapi>=0.115
+uvicorn[standard]>=0.30
+pandas>=2.2
+openpyxl>=3.1
+pyarrow>=17.0
+python-calamine>=0.6
+pydantic-settings>=2.4
+google-cloud-storage>=2.18
+psycopg[binary,pool]>=3.2
+# tzdata: the loader keeps India time (TIMEZONE) and the slim Docker image has no zone files.
+tzdata
